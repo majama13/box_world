@@ -12,7 +12,9 @@ class Obstacle(pygame.sprite.Sprite):
 		self.rect = pygame.Rect([0, 0, 0, 0])
 		self.vel = 5
 		self.min_size = player_size * 2
-		self.color = (225, 225, 225)
+		self.WHITE = (225, 225, 225)
+		self.BLACK = (0, 0, 0)
+		self.color = self.BLACK
 		self.parent = parent
 		
 	

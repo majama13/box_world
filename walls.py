@@ -7,15 +7,17 @@ class Wall(pygame.Rect):
 	
 		#super().__init__()
 		self.window = window
+		self.WHITE = (225,225,225)
 		self.rect = pygame.Rect(self.window.get_width()//2, 0, 0, 0)
 		self.image = pygame.Surface([self.rect.width, self.rect.height])
 		self.left_wall = -player_size
 		self.right_wall = self.window.get_width() + player_size
 		self.vel = 5
 
+
 	def update(self, keys):
 
-		self.image.fill((225,225,225))
+		self.image.fill(self.WHITE)
 		
 		if self.rect.center[0] < self.window.get_width():
 			self.rect.x += keys[pygame.K_LEFT] * self.vel
@@ -26,38 +28,21 @@ class Wall(pygame.Rect):
 			self.left_wall -= keys[pygame.K_RIGHT] * self.vel
 			self.right_wall -= keys[pygame.K_RIGHT] * self.vel
 		#print(self.left_wall, self.right_wall)
+
+
+	def draw(self):
+		pygame.draw.line(self.window, 
+						self.WHITE, 
+						(self.left_wall, 0), 
+						(self.left_wall, self.window.get_height())
+		)
+		pygame.draw.line(self.window, 
+						self.WHITE, 
+						(self.right_wall, 0), 
+						(self.right_wall, self.window.get_height())
+		)
 	
+
 	def reset(self):
 		pass
-
-def main():
-	WIDTH, HEIGHT = 300, 600
-	window = pygame.display.set_mode((WIDTH, HEIGHT))
-	game_area = pygame.Rect(0, 0, WIDTH, HEIGHT)
-	right_wall = Wall(window)
-
-	run = True
-	while run:
-		pygame.time.Clock().tick(60)
-		
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				run = False
-			if event.type == pygame.KEYDOWN:					
-				print(pygame.key.name(event.key))
-
-		keys = pygame.key.get_pressed()
-		
-		#update
-		right_wall.update(keys)
-		
-		#draw
-		window.fill(0)
-
-		window.blit(right_wall.image, (right_wall.rect.x, right_wall.rect.y))
-
-		pygame.display.flip()
-
-	pygame.quit()
-	exit()
 

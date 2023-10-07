@@ -29,8 +29,10 @@ class Dodge():
 		self.player_sprites.add(self.P1)
 
 		self.laser_sprites = pygame.sprite.Group()
-		self.laser = laser.Laser(self.P1.radius)
+		self.laser = laser.Laser(self.window, self.P1.radius)
 		self.laser_sprites.add(self.laser)
+		self.laser_switch = False
+		self.laser_hold = False
 
 		self.wall = walls.Wall(self.window, self.player_size)
 		
@@ -96,7 +98,10 @@ class Dodge():
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					self.run = False
-				#if event.type == pygame.KEYDOWN:					
+				if event.type == pygame.KEYDOWN:
+					self.laser_switch = (event.key == pygame.K_x)
+					if event.key == pygame.K_z:
+						self.laser_hold = not(self.laser_hold)
 					#print(pygame.key.name(event.key))
 
 			self.keys = pygame.key.get_pressed()
@@ -105,18 +110,19 @@ class Dodge():
 			self.wall.update(self.keys)
 			self.obst_sprites.update(self.keys, self.wall.rect.center[0], self.wall.left_wall, self.wall.right_wall)
 			self.player_sprites.update(self.keys)
-			self.laser_sprites.update(self.keys, self.P1.rect.center[0], self.P1.rect.center[1])
+			self.laser_sprites.update(self.laser_switch, self.laser_hold, self.obst_sprites)
+			self.laser_switch = 0
 			
 			#draw sprites
 			self.window.fill(0)
 
 			self.obst_sprites.draw(self.window)
 			self.player_sprites.draw(self.window)
-			if self.laser.lasershot:
-				self.laser_sprites.draw(self.window)
+			self.laser.draw()
+			self.wall.draw()
 			#self.window.blit(self.wall.image, (self.wall.rect.x, self.wall.rect.y))
-			pygame.draw.line(self.window, self.WHITE, (self.wall.left_wall,0), (self.wall.left_wall,self.window.get_height()))
-			pygame.draw.line(self.window, self.WHITE, (self.wall.right_wall,0), (self.wall.right_wall,self.window.get_height()))
+			#pygame.draw.line(self.window, self.WHITE, (self.wall.left_wall,0), (self.wall.left_wall,self.window.get_height()))
+			#pygame.draw.line(self.window, self.WHITE, (self.wall.right_wall,0), (self.wall.right_wall,self.window.get_height()))
 			
 
 			pygame.display.flip()
